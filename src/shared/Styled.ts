@@ -80,7 +80,7 @@ const Content = styled.div`
     padding: 15px;
 `;
 
-const Drawer = styled.div`
+const Card = styled.div`
     position: relative;
     margin: 0 20px;
     overflow: auto;
@@ -98,6 +98,13 @@ const Container = styled.div`
     flow-direction: row;
 `;
 
+const List = styled.ul`
+    list-style: none;
+    padding: 0;
+    li {
+        padding: 5px;
+    }
+`;
 
 export default {
     SimpleButton,
@@ -106,9 +113,10 @@ export default {
     DetailsSection,
     AddTaskSection,
     FormContent,
-    Drawer,
+    Card,
     Content,
     Footer,
     Header,
-    Container
+    Container,
+    List
 }

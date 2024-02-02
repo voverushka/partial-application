@@ -71,12 +71,12 @@ const AddTasksForm = (props: AddTasksProps) => {
                     }
                 }}
             >
-                Add task
+                Add new task
             </Styled.SimpleButton>
         </Styled.AddTaskSection>
         <Styled.DetailsSection>
-            <summary>Test section</summary>
-            <p>If you add new task, this section will collapse.</p>
+            <summary>Instructions</summary>
+            <p>Type new task, press Add Task, this section will collapse.</p>
         </Styled.DetailsSection>
     </Styled.FormContent>
 }
@@ -88,7 +88,7 @@ export const getAddTasksFormContent = (props: AddTasksFormContentProps) =>
 
 // usage
 const FormContainer = (props: FormContainerProps) => {
-    return <Styled.Drawer>
+    return <Styled.Card>
         <Formik
             initialValues={{
                 personName: undefined
@@ -113,7 +113,7 @@ const FormContainer = (props: FormContainerProps) => {
             }
             }
         </Formik>
-    </Styled.Drawer>
+    </Styled.Card>
 }
 
 
