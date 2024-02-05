@@ -96,20 +96,34 @@ const FormContainer = (props: FormContainerProps) => {
             onSubmit={(values) => { alert("Submitting " + JSON.stringify(values)); }}
         >
             {(formikProps: FormikProps<any>) => {
-                const formContent = props.content;
-                return <>
-                    <Styled.Header>
-                        <h3>{props.headerText}</h3>
-                    </Styled.Header>
-                    <Styled.Content>{formContent(formikProps)}</Styled.Content>
-                    <Styled.Footer>
-                        <Styled.SimpleButton
-                            type="submit"
-                            onClick={() => formikProps.handleSubmit()}>
-                            Submit
-                        </Styled.SimpleButton>
-                    </Styled.Footer>
-                </>
+                const [count, setCount] = useState(0);
+                if (count < 3) {
+                    const formContent = props.content;
+                    const colors = ["green", "orange", "red"];
+                    const [color, setColor] = useState(colors[0]);
+                    return <>
+                        <Styled.Header>
+                            <h3>{props.headerText}</h3>
+                        </Styled.Header>
+                        <Styled.Content>{formContent(formikProps)}{count}</Styled.Content>
+                        <Styled.Footer>
+                            <Styled.SimpleButton
+                                style={{
+                                    background: color
+                                }}
+                                type="submit"
+                                onClick={() => {
+                                    formikProps.handleSubmit();
+                                    setCount(count + 1);
+                                    setColor(colors[count + 1]);
+                                }}>
+                                Submit
+                            </Styled.SimpleButton>
+                        </Styled.Footer>
+                    </>
+                } else {
+                    return <div>You cannot submit anymore</div>
+                }
             }
             }
         </Formik>

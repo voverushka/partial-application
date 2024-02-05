@@ -3,7 +3,7 @@ const tasks = new Set([
 ]);
 
 const getTasks = (): Promise<string[]> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve(Array.from(tasks));
         }, 500);
@@ -12,7 +12,7 @@ const getTasks = (): Promise<string[]> => {
 
 
 const addTask = (task: string): Promise<string[]> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             tasks.add(task);
             resolve(Array.from(tasks));

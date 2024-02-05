@@ -97,15 +97,19 @@ const FormContainer = (props: FormContainerProps) => {
         >
             {(formikProps: FormikProps<any>) => {
                 const FormContent = props.content;
+                const [count, setCount] = useState(0);
                 return <>
                     <Styled.Header>
                         <h3>{props.headerText}</h3>
                     </Styled.Header>
-                    <Styled.Content><FormContent {...formikProps} /></Styled.Content>
+                    <Styled.Content><FormContent {...formikProps} />{count}</Styled.Content>
                     <Styled.Footer>
                         <Styled.SimpleButton
                             type="submit"
-                            onClick={() => formikProps.handleSubmit()}>
+                            onClick={() => {
+                                setCount(count + 1);
+                                formikProps.handleSubmit()
+                            }}>
                             Submit
                         </Styled.SimpleButton>
                     </Styled.Footer>

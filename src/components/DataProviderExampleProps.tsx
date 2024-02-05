@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-interface ProviderProps<T extends Data> {
+interface ProviderProps {
     refresh: boolean;
-    propsFn: (data: DataState) => T,
-    renderComponent: (props: T) => JSX.Element;
+    renderComponent: (props: { data: DataState }) => JSX.Element;
 }
 
 import TasksService from "../api-client/Tasks";
@@ -14,17 +13,14 @@ interface DataState {
     error: string | undefined;
 }
 
-type TasksBoardProps = {
+interface TasksBoardProps {
     title: string;
     description: string;
     data: DataState;
 }
 
-type Data = {
-    data: DataState
-}
-
 type TaskBoardStaticProps = Pick<TasksBoardProps, "title" | "description">;
+type TaskBoardDataProps = Pick<TasksBoardProps, "data">;
 
 const TasksBoard = (props: TasksBoardProps) => {
     useEffect(() => {
@@ -45,15 +41,12 @@ const TasksBoard = (props: TasksBoardProps) => {
     </Styled.Card>
 }
 
-const TaskBoardsPropsPipeline = (staticProps: TaskBoardStaticProps) =>
-    (dataProps: DataState) =>
-    ({
-        ...staticProps,
-        data: dataProps
-    })
+const TaskBoardsPipeline = (staticProps: TaskBoardStaticProps) =>
+    (dataProps: TaskBoardDataProps) =>
+        <TasksBoard {...staticProps} {...dataProps} />;
 
 
-const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
+const DataProvider = (props: ProviderProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [tasks, setTasks] = useState<string[]>([]);
@@ -79,15 +72,12 @@ const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
         }
     }, []);
 
-    const dataState = {
+    const data = {
         loading,
         error,
         tasks
     }
-
-    const cmpProps = props.propsFn(dataState);
-
-    return <props.renderComponent {...cmpProps} />
+    return <props.renderComponent data={data} />;
     //return <props.renderComponent data={data} />
 }
 
@@ -106,8 +96,12 @@ const Example = () => {
 
     return <DataProvider
         refresh
-        propsFn={TaskBoardsPropsPipeline({ title, description: "This sections should not collapse on title change" })}
-        renderComponent={TasksBoard}
+        renderComponent={TaskBoardsPipeline(
+            {
+                title,
+                description: "Tasks for illustration of Data Provider pattern"
+            }
+        )}
     />
 }
 
