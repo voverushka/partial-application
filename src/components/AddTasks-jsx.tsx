@@ -8,15 +8,21 @@ interface AddTasksFormContentProps {
     onAddTask: (newTask: string) => void;
 }
 
+interface FormValues {
+    selectedTask: string;
+    personName: string;
+}
+
 interface FormContainerProps {
-    content: (formikProps: FormikProps<AddTasksFormContentProps>) => JSX.Element;
+    content: (formikProps: FormikProps<FormValues>) => JSX.Element;
     headerText: string;
+    initialValues: FormValues
 }
 
 // componentProps + formikProps
 interface AddTasksProps {
     componentProps: AddTasksFormContentProps;
-    formikProps: FormikProps<AddTasksFormContentProps>;
+    formikProps: FormikProps<FormValues>;
 }
 
 const AddTasksForm = (props: AddTasksProps) => {
@@ -37,6 +43,7 @@ const AddTasksForm = (props: AddTasksProps) => {
         <Styled.SimpleInput
             id="person"
             name="personName"
+            value={formikProps.values.personName ?? formikProps.initialValues.personName}
             type="text"
             onChange={handleChange}
         />
@@ -50,10 +57,13 @@ const AddTasksForm = (props: AddTasksProps) => {
         </label>
         <Styled.SimpleSelect
             id="tasks"
-            name="tasks"
+            name="selectedTask"
+            value={formikProps.values.selectedTask ?? formikProps.initialValues.selectedTask}
             onChange={handleChange}
         >
-            {componentProps.tasks.map(t => <option key={t} value={t}>{t}</option>)}
+            {componentProps.tasks.map(t =>
+                <option key={t} value={t}>{t}</option>
+            )}
         </Styled.SimpleSelect>
         <Styled.AddTaskSection>
             <Styled.SimpleInput
@@ -75,14 +85,14 @@ const AddTasksForm = (props: AddTasksProps) => {
             </Styled.SimpleButton>
         </Styled.AddTaskSection>
         <Styled.DetailsSection>
-            <summary>Instructions</summary>
-            <p>Type new task, press Add Task, this section will collapse.</p>
+            <summary>Test section</summary>
+            <p>If you add new task, this section will NOT collapse.</p>
         </Styled.DetailsSection>
     </Styled.FormContent>
 }
 
 export const getAddTasksFormContent = (props: AddTasksFormContentProps) =>
-    (formikProps: FormikProps<AddTasksFormContentProps>) => {
+    (formikProps: FormikProps<FormValues>) => {
         return <AddTasksForm componentProps={props} formikProps={formikProps} />
     }
 
@@ -90,30 +100,34 @@ export const getAddTasksFormContent = (props: AddTasksFormContentProps) =>
 const FormContainer = (props: FormContainerProps) => {
     return <Styled.Card>
         <Formik
-            initialValues={{
-                personName: undefined
-            }}
+            enableReinitialize={true}
+            initialValues={props.initialValues}
             onSubmit={(values) => { alert("Submitting " + JSON.stringify(values)); }}
         >
             {(formikProps: FormikProps<any>) => {
-                const FormContent = props.content;
                 const [count, setCount] = useState(0);
+                // if (count < 3) {
+                const FormContent = props.content;
                 return <>
                     <Styled.Header>
                         <h3>{props.headerText}</h3>
+                        <h5>{`Times submitted ${count}`}</h5>
                     </Styled.Header>
-                    <Styled.Content><FormContent {...formikProps} />{count}</Styled.Content>
+                    <Styled.Content><FormContent {...formikProps} /></Styled.Content>
                     <Styled.Footer>
                         <Styled.SimpleButton
                             type="submit"
                             onClick={() => {
+                                formikProps.handleSubmit();
                                 setCount(count + 1);
-                                formikProps.handleSubmit()
                             }}>
                             Submit
                         </Styled.SimpleButton>
                     </Styled.Footer>
                 </>
+                // } else {
+                //     return <div>You cannot submit anymore</div>
+                // }
             }
             }
         </Formik>
@@ -139,6 +153,10 @@ const Example = () => {
 
     return <FormContainer
         headerText='Assign Task'
+        initialValues={{
+            personName: "Alma",
+            selectedTask: tasks[1]
+        }}
         content={getAddTasksFormContent({
             onAddTask,
             tasks
@@ -147,4 +165,3 @@ const Example = () => {
 }
 
 export default Example;
-

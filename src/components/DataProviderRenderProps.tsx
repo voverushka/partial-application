@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-interface ProviderProps<T extends Data> {
+interface ProviderProps {
     refresh: boolean;
-    propsFn: (data: DataState) => T,
-    renderComponent: (props: T) => JSX.Element;
+    renderComponent: (props: { data: DataState }) => JSX.Element;
 }
 
 import TasksService from "../api-client/Tasks";
@@ -14,17 +13,14 @@ interface DataState {
     error: string | undefined;
 }
 
-type TasksBoardProps = {
+interface TasksBoardProps {
     title: string;
     description: string;
     data: DataState;
 }
 
-type Data = {
-    data: DataState
-}
-
 type TaskBoardStaticProps = Pick<TasksBoardProps, "title" | "description">;
+type TaskBoardDataProps = Pick<TasksBoardProps, "data">;
 
 const TasksBoard = (props: TasksBoardProps) => {
     useEffect(() => {
@@ -45,15 +41,12 @@ const TasksBoard = (props: TasksBoardProps) => {
     </Styled.Card>
 }
 
-const TaskBoardsPropsPipeline = (staticProps: TaskBoardStaticProps) =>
-    (dataProps: DataState) =>
-    ({
-        ...staticProps,
-        data: dataProps
-    })
+const TaskBoardsPipeline = (staticProps: TaskBoardStaticProps) =>
+    (dataProps: TaskBoardDataProps) =>
+        <TasksBoard {...staticProps} {...dataProps} />;
 
 
-const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
+const DataProvider = (props: ProviderProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [tasks, setTasks] = useState<string[]>([]);
@@ -79,35 +72,58 @@ const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
         }
     }, []);
 
-    const dataState = {
+    const data = {
         loading,
         error,
         tasks
     }
+    const Comp = props.renderComponent;
+    return <Comp data={data} />;
 
-    const cmpProps = props.propsFn(dataState);
-
-    return <props.renderComponent {...cmpProps} />
-    //return <props.renderComponent data={data} />
+    // This would NOT destroy/re-create component ! to be used with caution though.
+    // return props.renderComponent({ data });
 }
 
 const Example = () => {
-    const [title, setTitle] = useState("Tasks");
+    const [timeAllocated, seTimeAllocated] = useState(5000);
 
     useEffect(() => {
-        const x = setInterval(() => {
-            setTitle("Task " + Math.random());
+        let x: number | null = setInterval(() => {
+            seTimeAllocated(tt => {
+                if (tt > 0) {
+                    return tt - 500;
+                } else {
+                    if (x) {
+                        clearInterval(x);
+                        x = null;
+                    }
+                    return tt;
+                }
+            });
         }, 500);
 
         return () => {
-            clearInterval(x);
+            if (x) {
+                clearInterval(x);
+                x = null;
+            }
         }
     }, []);
 
+    // here renderable component wuld be returned at the end of TaskBoardsPipeline
+    // however each time new component definition would be created
+    // and if you render it as component with JSX syntax, it will be destroyed and recreated
+    // each time timeAllocated is changing
+    // if you call it as a function, lifecycle hooks do not exacute at component level,
+    // they assigned to component parent. But that should be used with caution
     return <DataProvider
         refresh
-        propsFn={TaskBoardsPropsPipeline({ title, description: "This sections should not collapse on title change" })}
-        renderComponent={TasksBoard}
+        renderComponent={TaskBoardsPipeline(
+            {
+                title: `Time allocated ${timeAllocated}`,
+                description: "Tasks for illustration of Data Provider pattern"
+            }
+        )}
     />
 }
 

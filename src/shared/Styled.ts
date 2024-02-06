@@ -57,10 +57,13 @@ const DetailsSection = styled.details`
 
 // Form
 const Header = styled.header`
+    h3, h5 {
+        margin: 5px;
+    }
     display: flex;
+    flex-direction: column;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid lightgray;
 `;

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-interface ProviderProps {
+interface ProviderProps<T extends Data> {
     refresh: boolean;
-    renderComponent: (props: { data: DataState }) => JSX.Element;
+    propsFn: (data: DataState) => T,
+    renderComponent: (props: T) => JSX.Element;
 }
 
 import TasksService from "../api-client/Tasks";
@@ -13,14 +14,17 @@ interface DataState {
     error: string | undefined;
 }
 
-interface TasksBoardProps {
+type TasksBoardProps = {
     title: string;
     description: string;
     data: DataState;
 }
 
+type Data = {
+    data: DataState
+}
+
 type TaskBoardStaticProps = Pick<TasksBoardProps, "title" | "description">;
-type TaskBoardDataProps = Pick<TasksBoardProps, "data">;
 
 const TasksBoard = (props: TasksBoardProps) => {
     useEffect(() => {
@@ -41,12 +45,15 @@ const TasksBoard = (props: TasksBoardProps) => {
     </Styled.Card>
 }
 
-const TaskBoardsPipeline = (staticProps: TaskBoardStaticProps) =>
-    (dataProps: TaskBoardDataProps) =>
-        <TasksBoard {...staticProps} {...dataProps} />;
+const TaskBoardsPropsPipeline = (staticProps: TaskBoardStaticProps) =>
+    (dataProps: DataState) =>
+    ({
+        ...staticProps,
+        data: dataProps
+    })
 
 
-const DataProvider = (props: ProviderProps) => {
+const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>(undefined);
     const [tasks, setTasks] = useState<string[]>([]);
@@ -72,36 +79,52 @@ const DataProvider = (props: ProviderProps) => {
         }
     }, []);
 
-    const data = {
+    const dataState = {
         loading,
         error,
         tasks
     }
-    return <props.renderComponent data={data} />;
+
+    const cmpProps = props.propsFn(dataState);
+
+    return <props.renderComponent {...cmpProps} />
     //return <props.renderComponent data={data} />
 }
 
 const Example = () => {
-    const [title, setTitle] = useState("Tasks");
+    const [timeAllocated, seTimeAllocated] = useState(5000);
 
     useEffect(() => {
-        const x = setInterval(() => {
-            setTitle("Task " + Math.random());
+        let x: number | null = setInterval(() => {
+            seTimeAllocated(tt => {
+                if (tt > 0) {
+                    return tt - 500;
+                } else {
+                    if (x) {
+                        clearInterval(x);
+                        x = null;
+                    }
+                    return tt;
+                }
+            });
         }, 500);
 
         return () => {
-            clearInterval(x);
+            if (x) {
+                clearInterval(x);
+                x = null;
+            }
         }
     }, []);
 
+    // here we pass propsFn as separate function
+    // could be possible to pass it as a context
+    // ...or renderComponent could be an array containing propsFn and compenent
+    // the essence is the same: we let props through pipeline, but component is defined statically
     return <DataProvider
         refresh
-        renderComponent={TaskBoardsPipeline(
-            {
-                title,
-                description: "Tasks for illustration of Data Provider pattern"
-            }
-        )}
+        propsFn={TaskBoardsPropsPipeline({ title: `Time allocated ${timeAllocated}`, description: "This sections should not collapse on title change" })}
+        renderComponent={TasksBoard}
     />
 }
 
