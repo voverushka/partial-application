@@ -1,7 +1,8 @@
 // import Example from "./components/AddTasks-fn";
-import Example1 from "./components/AddTasks-jsx";
+import Example1 from "./components/ArticleExample";
 // import Example3 from "./components/DataProviderPropsPipeline";
 // import Example4 from "./components/DataProviderRenderProps";
+import SimpleProvider from "./components/SimpleProvider";
 //import Example4 from "./components/Example";
 import Styled from "./shared/Styled";
 import "./App.css";

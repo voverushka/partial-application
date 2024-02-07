@@ -84,6 +84,7 @@ const DataProvider = (props: ProviderProps) => {
     // return props.renderComponent({ data });
 }
 
+
 const Example = () => {
     const [timeAllocated, seTimeAllocated] = useState(5000);
 
