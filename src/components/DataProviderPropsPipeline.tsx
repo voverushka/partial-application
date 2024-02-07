@@ -35,6 +35,8 @@ const TasksBoard = (props: TasksBoardProps) => {
     }, []);
     const { title, description } = props;
     return <Styled.Card style={{ padding: "20px" }}>
+        <p>If you expand title while number is changing, it should not collapse.
+            Only props go through assembly line here.</p>
         <Styled.DetailsSection>
             <summary>{title}</summary>
             <p>{description}</p>
@@ -92,7 +94,7 @@ const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
 }
 
 const Example = () => {
-    const [timeAllocated, seTimeAllocated] = useState(5000);
+    const [timeAllocated, seTimeAllocated] = useState(50000);
 
     useEffect(() => {
         let x: number | null = setInterval(() => {

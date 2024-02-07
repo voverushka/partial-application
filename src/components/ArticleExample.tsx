@@ -8,7 +8,10 @@ const Item = () => {
 
 const Counter = () => {
     const [testCount, setTestCount] = useState(0);
-    return <button onClick={() => setTestCount(testCount + 1)}>{testCount}</button>;
+    return <>
+        <strong>Independant counter. Click me.</strong>
+        <button onClick={() => setTestCount(testCount + 1)}>{testCount}</button>;
+    </>
 }
 
 const ItemsList = (count: number): JSX.Element[] => {
@@ -24,13 +27,17 @@ export default function HooksExample() {
     const addItem = () => setCount(count + 1);
 
     return (
-        <div className="App">
-            <button onClick={addItem}>Add Item</button>
-            <h1>This is the list:</h1>
+        <div className="App" style={{ padding: "20px", border: "1px solid lightgray" }}>
+            <p>Calling Counter component as a function would not cause error, as it is rendered unconditionally
+                Comment line 34 and uncomment 35, then try to add 2 items to see error
+            </p>
             <div>{Counter()}</div>
+            {/* <div>{count > 1 ? Counter() : <p>less than 2 items added</p>}</div> */}
+            <h5>This is the list:</h5>
             <div>
                 {ItemsList(count)}
             </div>
+            <button style={{ marginTop: "10px" }} onClick={addItem}>Add Item</button>
         </div>
     );
 }

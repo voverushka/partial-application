@@ -1,19 +1,18 @@
-// import Example from "./components/AddTasks-fn";
-import Example1 from "./components/ArticleExample";
-// import Example3 from "./components/DataProviderPropsPipeline";
-// import Example4 from "./components/DataProviderRenderProps";
-import SimpleProvider from "./components/SimpleProvider";
-//import Example4 from "./components/Example";
+// import AddTasksFn from "./components/AddTasks-fn";
+// import AddTasksJSX from "./components/AddTasks-jsx";
+// import DataProviderRenderProps from "./components/DataProviderRenderProps";
+// import DataProviderPropsPipeline from "./components/DataProviderPropsPipeline";
+import ArticleExample from "./components/ArticleExample";
 import Styled from "./shared/Styled";
 import "./App.css";
 
 function App() {
   return <Styled.Container>
-    <Example1 />
-    {/* <Example1 /> */}
-    {/* <Example3 /> */}
-    {/* <Example3 /> */}
-    {/* <Example4 /> */}
+    {/* <AddTasksFn />
+    <AddTasksJSX />
+    <DataProviderRenderProps />
+    <DataProviderPropsPipeline /> */}
+    <ArticleExample />
   </Styled.Container>
 }
 

@@ -109,6 +109,8 @@ const FormContainer = (props: FormContainerProps) => {
                 // if (count < 3) {
                 const FormContent = props.content;
                 return <>
+                    <p style={{ padding: "20px" }}>In this case, form content is rendered with JSX syntax.
+                        Expand Test section, add new task. Test section will collapse</p>
                     <Styled.Header>
                         <h3>{props.headerText}</h3>
                         <h5>{`Times submitted ${count}`}</h5>

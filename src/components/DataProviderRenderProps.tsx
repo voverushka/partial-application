@@ -31,6 +31,10 @@ const TasksBoard = (props: TasksBoardProps) => {
     }, []);
     const { title, description } = props;
     return <Styled.Card style={{ padding: "20px" }}>
+        <p>Try to expand title while number of 'time allapsed' is changing
+            Title will collapse. If you incomment line 88 and comment line 85
+            in source file, it should prevent title collapse
+        </p>
         <Styled.DetailsSection>
             <summary>{title}</summary>
             <p>{description}</p>
@@ -86,7 +90,7 @@ const DataProvider = (props: ProviderProps) => {
 
 
 const Example = () => {
-    const [timeAllocated, seTimeAllocated] = useState(5000);
+    const [timeAllocated, seTimeAllocated] = useState(50000);
 
     useEffect(() => {
         let x: number | null = setInterval(() => {

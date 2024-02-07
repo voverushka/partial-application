@@ -77,7 +77,6 @@ const AddTasksForm = (props: AddTasksProps) => {
                 onClick={() => {
                     if (newTask) {
                         componentProps.onAddTask(newTask);
-                        //setNewTask("");
                     }
                 }}
             >
@@ -99,6 +98,8 @@ export const getAddTasksFormContent = (props: AddTasksFormContentProps) =>
 // usage
 const FormContainer = (props: FormContainerProps) => {
     return <Styled.Card>
+        <p style={{ padding: "20px" }}>In this case, form content component is called as a function.
+            Expand Test section, add new task. Test section shouldnot collapse</p>
         <Formik
             enableReinitialize={true}
             initialValues={props.initialValues}

@@ -19,6 +19,7 @@ interface TasksBoardProps {
 
 const TasksBoard = (props: TasksBoardProps) => {
     return <Styled.Card style={{ padding: "20px" }}>
+        <p>Simple Data Provider Example. Our component only needs data to be injected</p>
         <Styled.List>
             {(props.data.tasks ?? []).map(item => <li key={item}>{item}</li>)}
         </Styled.List>
