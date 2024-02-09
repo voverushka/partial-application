@@ -26,6 +26,18 @@ type Data = {
 
 type TaskBoardStaticProps = Pick<TasksBoardProps, "title" | "description">;
 
+const backgrounds = ["green", "orange", "red"];
+const Item = (props: { text: string }) => {
+    const [backgroundIndex, setBackgroundIndex] = useState(0);
+    const { text } = props;
+    return <li style={{ padding: "10px", background: backgrounds[backgroundIndex] }} key={text}>
+        <button key={`button ${text}`}
+            style={{ padding: "5px" }}
+            onClick={() => setBackgroundIndex((backgroundIndex + 1) % 3)}
+        >Change Background</button>
+    </li >;
+}
+
 const TasksBoard = (props: TasksBoardProps) => {
     useEffect(() => {
         console.log("Tasks component did mount");
@@ -42,7 +54,7 @@ const TasksBoard = (props: TasksBoardProps) => {
             <p>{description}</p>
         </Styled.DetailsSection>
         <Styled.List>
-            {(props.data.tasks ?? []).map(item => <li key={item}>{item}</li>)}
+            {(props.data.tasks ?? []).map((item, index) => <Item key={index} text={item} />)}
         </Styled.List>
     </Styled.Card>
 }
@@ -90,7 +102,10 @@ const DataProvider = (props: ProviderProps<TasksBoardProps>) => {
     const cmpProps = props.propsFn(dataState);
 
     return <props.renderComponent {...cmpProps} />
-    //return <props.renderComponent data={data} />
+
+    // If you use function call it would cause error
+    //return props.renderComponent({...cmpProps})
+
 }
 
 const Example = () => {
